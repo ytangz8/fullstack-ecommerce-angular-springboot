@@ -1,0 +1,56 @@
+/* 
+ * ----------------------------
+ * Search Component - Modern Design
+ * ----------------------------
+ */
+
+.form-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.form-header input {
+    flex: 1;
+}
+
+.form-header button {
+    flex-shrink: 0;
+}
+
+/* Input Focus Enhancement */
+.au-input-xl:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Button Enhancement */
+.au-btn-submit {
+    white-space: nowrap;
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .form-header {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 767px) {
+    .form-header {
+        gap: 8px;
+    }
+    
+    .au-input-xl {
+        font-size: 14px;
+        padding: 0 16px;
+    }
+    
+    .au-btn-submit {
+        min-width: 80px;
+        font-size: 14px;
+        padding: 0 16px;
+    }
+}

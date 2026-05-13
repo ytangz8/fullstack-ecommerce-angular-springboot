@@ -1,0 +1,180 @@
+/* 
+ * ----------------------------
+ * Cart Details Component - Modern Design
+ * ----------------------------
+ */
+
+.main-content {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Table Enhancements */
+.table {
+    margin-bottom: 32px;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.table td p {
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+.table td p:first-child {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 16px;
+}
+
+.table td p:last-child {
+    color: #64748b;
+}
+
+/* Image Styling */
+.table img {
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Quantity Controls */
+.items {
+    margin-bottom: 16px;
+}
+
+.items label {
+    display: block;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.items .row {
+    align-items: center;
+}
+
+.items .col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.items .col.ml-4 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    min-width: 40px;
+}
+
+.items .btn {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 14px;
+}
+
+.items .btn i {
+    margin: 0;
+}
+
+/* Remove Button */
+.btn.mt-2 {
+    background: #ef4444 !important;
+    border-color: #ef4444 !important;
+}
+
+.btn.mt-2:hover {
+    background: #dc2626 !important;
+    border-color: #dc2626 !important;
+}
+
+/* Subtotal */
+.table td p.mt-2 {
+    font-weight: 700;
+    color: #2563eb;
+    font-size: 16px;
+    margin-top: 16px;
+}
+
+/* Total Section */
+.table tbody tr:last-child td {
+    background: #f8fafc;
+    border-top: 2px solid #e2e8f0;
+    padding: 24px 20px;
+}
+
+.table tbody tr:last-child td p {
+    font-size: 16px;
+    margin-bottom: 12px;
+    color: #1e293b;
+}
+
+.table tbody tr:last-child td p:last-of-type {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2563eb;
+    margin-bottom: 20px;
+}
+
+.table tbody tr:last-child .btn {
+    margin-top: 8px;
+}
+
+/* Empty Cart Message */
+.alert-warning {
+    margin-top: 48px;
+    text-align: center;
+    font-size: 16px;
+    padding: 32px;
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .table-responsive {
+        border-radius: 16px;
+        overflow: hidden;
+    }
+    
+    .table td {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 767px) {
+    .table {
+        font-size: 14px;
+    }
+    
+    .table td {
+        padding: 12px;
+    }
+    
+    .table img {
+        max-width: 100px;
+    }
+    
+    .items .btn {
+        width: 36px;
+        height: 36px;
+        font-size: 12px;
+    }
+    
+    .items .col.ml-4 {
+        font-size: 16px;
+    }
+}

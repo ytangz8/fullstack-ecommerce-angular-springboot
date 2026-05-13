@@ -1,0 +1,106 @@
+/* 
+ * ----------------------------
+ * Product List Component - Modern Design
+ * ----------------------------
+ */
+
+/* Product Grid Spacing */
+.row {
+    margin-left: -16px;
+    margin-right: -16px;
+}
+
+.col-md-3 {
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+/* Product Card Enhancements */
+.product-box {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-box a {
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.product-box a:hover h1 {
+    color: #2563eb;
+}
+
+.product-box img {
+    aspect-ratio: 1;
+    object-fit: cover;
+}
+
+/* Button Styling */
+.product-box .btn {
+    margin-top: auto;
+    width: 100%;
+}
+
+/* Empty State */
+.alert-warning {
+    margin: 48px 0;
+    text-align: center;
+    font-size: 16px;
+}
+
+/* Pagination Enhancements */
+.footer-pagination label {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 14px;
+}
+
+.footer-pagination select {
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-weight: 500;
+    color: #1e293b;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.footer-pagination select:hover {
+    border-color: #2563eb;
+}
+
+.footer-pagination select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .col-md-3 {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    
+    .product-box {
+        margin-bottom: 48px;
+    }
+}
+
+@media (max-width: 767px) {
+    .footer-pagination {
+        padding: 16px;
+    }
+    
+    .footer-pagination .row {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .footer-pagination .col-md-3,
+    .footer-pagination .col-md-6 {
+        text-align: center !important;
+    }
+}

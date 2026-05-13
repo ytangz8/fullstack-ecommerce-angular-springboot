@@ -1,0 +1,64 @@
+/* 
+ * ----------------------------
+ * Cart Status Component - Modern Design
+ * ----------------------------
+ */
+
+.cart-area {
+    display: flex;
+    align-items: center;
+}
+
+.cart-area a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.cart-area a:hover .total {
+    transform: scale(1.05);
+}
+
+.cart-area a:hover i {
+    transform: scale(1.15);
+}
+
+/* Total Badge */
+.total {
+    display: flex;
+    align-items: center;
+    order: 2;
+}
+
+/* Cart Icon */
+.cart-area i {
+    order: 1;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .cart-area {
+        margin-left: auto;
+    }
+}
+
+@media (max-width: 767px) {
+    .total {
+        font-size: 14px;
+        line-height: 40px;
+        padding-left: 16px;
+    }
+    
+    .total span {
+        padding: 0 10px;
+        font-size: 14px;
+    }
+    
+    .cart-area i {
+        font-size: 20px;
+        margin-top: 12px;
+    }
+}

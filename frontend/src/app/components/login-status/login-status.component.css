@@ -1,42 +1,85 @@
-/*
-    Copy form styles.css then rename
-*/
+/* 
+ * ----------------------------
+ * Login Status Component - Modern Design
+ * ----------------------------
+ */
 
-.security-btn{
-    position:relative;
-    right:10px;
-    min-width:85px;
-    color:#fff;
-    border:10px solid #205b8d;
-    -webkit-border-radius:3px;
-    -moz-border-radius:3px;
-    border-radius:43px;
-    background:#205b8d
+.login-status-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.login-status-user-info {
+    color: #1e293b;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 0 16px;
+    line-height: 48px;
+    background: #f8fafc;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.security-btn {
+    position: relative;
+    min-width: 90px;
+    height: 48px;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    background: #2563eb;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 0 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
 }
 
 .security-btn:hover {
-    background: #05143f;
-    border-color: #05143f;
+    background: #1d4ed8;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    transform: translateY(-1px);
     cursor: pointer;
 }
 
-.login-status-header{
-    display:-webkit-box;
-    display:-webkit-flex;
-    display:-moz-box;
-    display:-ms-flexbox;
-    display:flex
+.security-btn.ml-1 {
+    margin-left: 8px;
 }
 
-.login-status-user-info{
-    line-height:43px;
-    border:1px;
-    padding:0 17px;
-    -webkit-border-radius:3px;
-    -moz-border-radius:3px;
-    border-radius:3px;
-    -webkit-transition:all .5s ease;
-    -o-transition:all .5s ease;
-    -moz-transition:all .5s ease;
-    transition:all .5s ease
+/* Responsive Design */
+@media (max-width: 991px) {
+    .login-status-header {
+        gap: 8px;
+    }
+    
+    .login-status-user-info {
+        font-size: 14px;
+        padding: 0 12px;
+        line-height: 44px;
+    }
+    
+    .security-btn {
+        min-width: 80px;
+        height: 44px;
+        font-size: 13px;
+        padding: 0 16px;
+    }
+}
+
+@media (max-width: 767px) {
+    .login-status-user-info {
+        display: none;
+    }
+    
+    .security-btn {
+        min-width: 70px;
+        height: 40px;
+        font-size: 12px;
+        padding: 0 12px;
+    }
+    
+    .security-btn.ml-1 {
+        margin-left: 6px;
+    }
 }
