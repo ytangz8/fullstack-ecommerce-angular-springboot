@@ -2,7 +2,7 @@ package com.blue.ecommerce.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+//import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,11 +22,15 @@ public class SecurityConfiguration {
 SecurityFilterChain configure(HttpSecurity http) throws Exception {
     http
     .cors(withDefaults())
-    .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+    .csrf(csrf -> csrf
+        .ignoringRequestMatchers("/h2-console/**")
+        .ignoringRequestMatchers("/api/chat/**")
+        .ignoringRequestMatchers("/api/checkout/**"))
     .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
     .authorizeHttpRequests(auth -> auth
+        .requestMatchers("/api/chat/**").permitAll()
         .requestMatchers("/api/**").permitAll()
-        .requestMatchers("/api/checkout/**").permitAll() 
+        .requestMatchers("/api/checkout/**").permitAll()
         .anyRequest().authenticated())
       .formLogin(withDefaults());
 

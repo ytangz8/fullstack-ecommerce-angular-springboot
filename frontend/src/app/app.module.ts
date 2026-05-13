@@ -24,6 +24,8 @@ import myAppConfig from './config/my-app-config';
 import { MembersPageComponent } from './components/members-page/members-page.component';
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
 import { AuthInterceptorService } from './services/auth-interceptor.service';
+import { ChatWidgetComponent } from './components/chat-widget/chat-widget.component';
+import { FormsModule } from '@angular/forms';
 
 const oktaConfig = myAppConfig.oidc;
 const oktaAuth = new OktaAuth(oktaConfig);
@@ -64,7 +66,7 @@ const routes: Routes = [
     LoginStatusComponent,
     MembersPageComponent,
     OrderHistoryComponent,
-    
+    ChatWidgetComponent
   ],
   imports: [
     BrowserModule,
@@ -72,9 +74,9 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     NgbModule,
     ReactiveFormsModule,
+    FormsModule,
     OktaAuthModule,
     HttpClientModule
-    
   ],
   providers: [
     provideClientHydration(withEventReplay()),
