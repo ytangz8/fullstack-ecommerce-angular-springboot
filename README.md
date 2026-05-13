@@ -24,45 +24,20 @@ This full-stack e-commerce web application provides a robust online shopping exp
 
 ## Future Improvements
 
-- Refactor into microservices (Product, Order, Payment) with Spring Cloud. (In Progress)
-- Deploy to Azure or another cloud platform.
-- Enhance performance with caching.
+- Redesign webpage with morden UI - VibeCoding.
+- Integrate AI chatbot with local LLM.
+- Refactor into microservices (Product, Order, Payment) with Spring Cloud.
+- Deploy to cloud platform.
 
-## Technology Stack
-
-### Frontend
-
-- **Angular**: Single-page application framework.
-- **TypeScript**: Type-safe JavaScript.
-- **Bootstrap**: Responsive UI with shop template.
-- **Angular Material**: Consistent UI components.
-
-### Backend
-
-- **Spring Boot**: RESTful API framework.
-- **Spring Data REST**: Exposes JPA repositories as REST endpoints.
-- **Spring Security**: Okta integration for JWT authentication.
-- **Java**: Backend language (Java 21).
-- **Hibernate/JPA**: ORM for database interactions.
-- **H2 Database**: In-memory database for development/testing.
-- **MySQL**: Production database.
-- **Stripe API**: Payment processing.
-
-### Infrastructure
-
-- **Maven**: Build tool.
-- **Okta**: Authentication provider.
-- **Git**: Version control.
 
 ## Prerequisites
 
 - **Java 17**: Install JDK.
 - **Node.js**: For Angular (v16+ recommended).
 - **Angular CLI**: Install globally with `npm install -g @angular/cli`.
-- **MySQL**: For production database.
-- **Okta Account**: For authentication.
+- **MySQL**: For production database. H2 for testing.
+- **Okta Account**: For authentication. Disabled when using H2.
 - **Stripe Account**: For payments.
-- **Maven**: For backend build.
 
 ## Setup Instructions
 
@@ -72,6 +47,16 @@ This full-stack e-commerce web application provides a robust online shopping exp
 git clone https://github.com/your-username/ecommerce-platform.git
 cd ecommerce-platform
 ```
+### Local LLM Setup
+1. **Install Ollama**
+   ```
+   curl -fsSL https://ollama.com/install.sh | sh
+   ```
+
+2. **Run local LLM**
+   ```
+   ollama run llava:7b
+   ```
 
 ### Backend Setup
 
@@ -114,7 +99,7 @@ cd ecommerce-platform
    mvn spring-boot:run
    ```
 
-   - APIs available at `http://localhost:8080/api`.
+   - APIs available at `https://localhost:8443api`.
 
 ### Frontend Setup
 
@@ -134,25 +119,27 @@ cd ecommerce-platform
 3. **Run Frontend**:
 
    ```bash
-   ng serve
+   npm start
    ```
 
-   - Access at `http://localhost:4200`.
+   - Access at `https://localhost:4200`.
 
-## Usage
+## Screenshots
+- Product listing
+![product listing](product_listing.png)
+- PDP page
+![alt text](image-1.png)
+- Cart and checkout
+![alt text](image-2.png)
+![alt text](image-3.png)
+- Payment with Stripe:
+![stripe](image.png)
+- Local LLM AI Chatbot
+![alt text](image-4.png)
 
-- **Browse Products**: View paginated products on the homepage.
-- **Search Products**: Filter by category or text search.
-- **Manage Cart**: Add/remove items and checkout.
-- **Authenticate**: Log in via Okta for order history or VIP page.
-- **Checkout**: Complete purchases with Stripe.
-- **Admin Tasks**: Manage products/orders (requires admin role).
 
 
 
-## Contributing
-
-Fork the repository, create a feature branch, and submit a pull request.
 
 ## License
 

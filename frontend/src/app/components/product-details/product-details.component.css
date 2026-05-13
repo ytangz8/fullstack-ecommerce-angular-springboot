@@ -1,0 +1,122 @@
+/* 
+ * ----------------------------
+ * Product Details Component - Modern Design
+ * ----------------------------
+ */
+
+.detail-section {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.detail-section h3 {
+    font-size: 32px;
+    margin-bottom: 16px;
+    color: #1e293b;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.detail-section h4 {
+    font-size: 20px;
+    margin-top: 48px;
+    margin-bottom: 16px;
+    color: #1e293b;
+    font-weight: 700;
+}
+
+.detail-section p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #64748b;
+    margin-bottom: 24px;
+}
+
+.detail-section hr {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 48px 0;
+}
+
+.detail-section .btn {
+    margin-top: 24px;
+    margin-bottom: 16px;
+}
+
+.detail-section a[routerLink] {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #64748b;
+    font-weight: 500;
+    font-size: 15px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.detail-section a[routerLink]:hover {
+    color: #2563eb;
+    background: #f1f5f9;
+}
+
+.detail-section a[routerLink]::before {
+    content: "←";
+    font-size: 18px;
+}
+
+/* Image styling */
+.detail-img {
+    display: block;
+    margin-bottom: 40px;
+}
+
+/* Price styling override for detail page */
+.detail-section .price {
+    font-size: 32px;
+    margin: 24px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .detail-section {
+        padding: 32px 24px;
+        margin-top: 64px;
+    }
+    
+    .detail-img {
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .detail-section h3 {
+        font-size: 28px;
+    }
+    
+    .detail-section .price {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 767px) {
+    .detail-section {
+        padding: 24px 16px;
+        margin-top: 48px;
+    }
+    
+    .detail-section h3 {
+        font-size: 24px;
+    }
+    
+    .detail-section .price {
+        font-size: 24px;
+    }
+    
+    .detail-section h4 {
+        font-size: 18px;
+        margin-top: 32px;
+    }
+}

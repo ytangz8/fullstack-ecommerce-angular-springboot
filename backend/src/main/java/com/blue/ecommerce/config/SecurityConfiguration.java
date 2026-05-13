@@ -2,44 +2,39 @@ package com.blue.ecommerce.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+//import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.accept.ContentNegotiationStrategy;
-import org.springframework.web.accept.HeaderContentNegotiationStrategy;
+//import org.springframework.web.accept.ContentNegotiationStrategy;
+//import org.springframework.web.accept.HeaderContentNegotiationStrategy;
+import static org.springframework.security.config.Customizer.withDefaults;
 
-import com.okta.spring.boot.oauth.Okta;
+
+// import com.okta.spring.boot.oauth.Okta;
 
 @Configuration
 public class SecurityConfiguration {
 
+    
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-
-        //protect endpoint /api/orders
-        http
+SecurityFilterChain configure(HttpSecurity http) throws Exception {
+    http
+    .cors(withDefaults())
+    .csrf(csrf -> csrf
+        .ignoringRequestMatchers("/h2-console/**")
+        .ignoringRequestMatchers("/api/chat/**")
+        .ignoringRequestMatchers("/api/checkout/**"))
+    .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
     .authorizeHttpRequests(auth -> auth
-        .requestMatchers("/api/orders/**").authenticated()
-        .anyRequest().permitAll() 
-    )
-    .oauth2ResourceServer(oauth2 -> oauth2
-        .jwt(Customizer.withDefaults())
-    );
+        .requestMatchers("/api/chat/**").permitAll()
+        .requestMatchers("/api/**").permitAll()
+        .requestMatchers("/api/checkout/**").permitAll()
+        .anyRequest().authenticated())
+      .formLogin(withDefaults());
 
-    // add CORS filters
-        http.cors(Customizer.withDefaults());
- 
-        // add content negotiation strategy
-        http.setSharedObject(ContentNegotiationStrategy.class,
-                             new HeaderContentNegotiationStrategy());
- 
-        // force a non-empty response body for 401's to make the response more friendly
-        Okta.configureResourceServer401ResponseBody(http);
-
-        //disable csrf
-        http.csrf(csrf -> csrf.disable());
- 
-        return http.build();
-    }
+    return http.build();
+}
 
 }
