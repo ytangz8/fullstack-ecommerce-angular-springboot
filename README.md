@@ -134,8 +134,8 @@ cd ecommerce-platform
 ![alt text](image-3.png)
 - Payment with Stripe:
 ![stripe](image.png)
-- Local LLM AI Chatbot
-![alt text](image-4.png)
+- Local LLM AI Chatbot:
+- ![alt text](image-4.png)
 
 
 
