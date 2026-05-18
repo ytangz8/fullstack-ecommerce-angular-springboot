@@ -44,8 +44,7 @@ This full-stack e-commerce web application provides a robust online shopping exp
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/ecommerce-platform.git
-cd ecommerce-platform
+git clone https://github.com/ytangz8/fullstack-ecommerce-angular-springboot.git
 ```
 ### Local LLM Setup
 1. **Install Ollama**
