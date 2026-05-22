@@ -46,6 +46,24 @@ services:
       retries: 6
       start_period: 20s
 
+  geo-service:
+    build:
+      context: ./services/geo-service
+    image: ecommerce/geo-service:dev
+    container_name: ecommerce-geo
+    expose:
+      - "8086"
+    environment:
+      SERVER_PORT: "8086"
+    networks:
+      - ecommerce-net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8086/actuator/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 20s
+
   api-gateway:
     build:
       context: ./services/api-gateway
@@ -57,10 +75,13 @@ services:
       SERVER_PORT: "8443"
       MONOLITH_URI: https://monolith:8443
       CHAT_SERVICE_URI: http://chat-service:8085
+      GEO_SERVICE_URI: http://geo-service:8086
     depends_on:
       monolith:
         condition: service_healthy
       chat-service:
+        condition: service_healthy
+      geo-service:
         condition: service_healthy
     networks:
       - ecommerce-net

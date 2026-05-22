@@ -49,11 +49,11 @@ spring:
           predicates:
             - Path=/api/customers/**
         - id: geo-countries
-          uri: ${MONOLITH_URI:https://localhost:8444}
+          uri: ${GEO_SERVICE_URI:http://localhost:8086}
           predicates:
             - Path=/api/countries/**
         - id: geo-states
-          uri: ${MONOLITH_URI:https://localhost:8444}
+          uri: ${GEO_SERVICE_URI:http://localhost:8086}
           predicates:
             - Path=/api/states/**
         - id: monolith-fallback
