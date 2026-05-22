@@ -1,0 +1,79 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      httpclient:
+        ssl:
+          # Dev only: the monolith uses a self-signed cert (luv2code-keystore.p12).
+          # Replace with a proper trust-store before production.
+          use-insecure-trust-manager: true
+        connect-timeout: 2000
+        response-timeout: 30s
+      default-filters:
+        - PreserveHostHeader
+      routes:
+        - id: chat-stream
+          uri: ${MONOLITH_URI:https://localhost:8443}
+          predicates:
+            - Path=/api/chat/**
+        - id: checkout
+          uri: ${MONOLITH_URI:https://localhost:8443}
+          predicates:
+            - Path=/api/checkout/**
+        - id: catalog-products
+          uri: ${MONOLITH_URI:https://localhost:8443}
+          predicates:
+            - Path=/api/products/**
+        - id: catalog-categories
+          uri: ${MONOLITH_URI:https://localhost:8443}
+          predicates:
+            - Path=/api/product-category/**
+        - id: orders
+          uri: ${MONOLITH_URI:https://localhost:8443}
+          predicates:
+            - Path=/api/orders/**
+        - id: customers
+          uri: ${MONOLITH_URI:https://localhost:8443}
+          predicates:
+            - Path=/api/customers/**
+        - id: geo-countries
+          uri: ${MONOLITH_URI:https://localhost:8443}
+          predicates:
+            - Path=/api/countries/**
+        - id: geo-states
+          uri: ${MONOLITH_URI:https://localhost:8443}
+          predicates:
+            - Path=/api/states/**
+        - id: monolith-fallback
+          uri: ${MONOLITH_URI:https://localhost:8443}
+          predicates:
+            - Path=/api/**
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - https://localhost:4200
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    reactor.netty.http.client: INFO

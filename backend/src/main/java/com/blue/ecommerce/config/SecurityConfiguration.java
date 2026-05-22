@@ -21,7 +21,7 @@ public class SecurityConfiguration {
     @Bean
 SecurityFilterChain configure(HttpSecurity http) throws Exception {
     http
-    .cors(withDefaults())
+    //.cors(withDefaults())
     .csrf(csrf -> csrf
         .ignoringRequestMatchers("/h2-console/**")
         .ignoringRequestMatchers("/api/chat/**")

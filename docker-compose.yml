@@ -1,0 +1,43 @@
+# Phase 0 of the microservices migration (see ARCHITECTURE.md).
+# api-gateway is the only edge exposed to the host; it reverse-proxies
+# every /api/** request to the existing monolith over an internal network.
+
+services:
+  monolith:
+    build:
+      context: ./backend
+    image: ecommerce/monolith:dev
+    container_name: ecommerce-monolith
+    expose:
+      - "8443"
+    # The monolith's existing CORS config (allowed.origins=https://localhost:4200)
+    # still applies — the browser's Origin header is preserved end-to-end.
+    networks:
+      - ecommerce-net
+    healthcheck:
+      test: ["CMD", "wget", "--no-check-certificate", "--spider", "-q", "https://localhost:8443/api/products"]
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 30s
+
+  api-gateway:
+    build:
+      context: ./services/api-gateway
+    image: ecommerce/api-gateway:dev
+    container_name: ecommerce-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      SERVER_PORT: "8080"
+      MONOLITH_URI: https://monolith:8443
+    depends_on:
+      monolith:
+        condition: service_healthy
+    networks:
+      - ecommerce-net
+
+networks:
+  ecommerce-net:
+    name: ecommerce-net
+    driver: bridge

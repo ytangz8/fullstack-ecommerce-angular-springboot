@@ -14,16 +14,16 @@ public class MyAppConfig implements WebMvcConfigurer{
     private String basePath;
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        // CORS for REST API
-        registry.addMapping(basePath + "/**")
-                .allowedOrigins(theAllowedOrigins);
+        // // CORS for REST API
+        // registry.addMapping(basePath + "/**")
+        //         .allowedOrigins(theAllowedOrigins);
         
-        // CORS for Chat API (SSE streaming)
-        registry.addMapping("/api/chat/**")
-                .allowedOrigins(theAllowedOrigins)
-                .allowedMethods("GET", "POST", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true);
+        // // CORS for Chat API (SSE streaming)
+        // registry.addMapping("/api/chat/**")
+        //         .allowedOrigins(theAllowedOrigins)
+        //         .allowedMethods("GET", "POST", "OPTIONS")
+        //         .allowedHeaders("*")
+        //         .allowCredentials(true);
         
         WebMvcConfigurer.super.addCorsMappings(registry);
     }
