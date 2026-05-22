@@ -1,6 +1,6 @@
-# Phase 0 of the microservices migration (see ARCHITECTURE.md).
-# api-gateway is the only edge exposed to the host; it reverse-proxies
-# every /api/** request to the existing monolith over an internal network.
+# Phase 1 of the microservices migration (see ARCHITECTURE.md).
+# chat-service is extracted from the monolith and receives /api/chat/** traffic.
+# All other /api/** requests are still reverse-proxied to the monolith.
 
 services:
   monolith:
@@ -21,18 +21,46 @@ services:
       retries: 12
       start_period: 30s
 
+  chat-service:
+    build:
+      context: ./services/chat-service
+    image: ecommerce/chat-service:dev
+    container_name: ecommerce-chat
+    expose:
+      - "8085"
+    environment:
+      SERVER_PORT: "8085"
+      # Ollama runs on the host machine; host.docker.internal resolves correctly
+      # on Docker Desktop (Mac/Windows). The extra_hosts entry below makes it
+      # work on Linux too.
+      OLLAMA_URI: http://host.docker.internal:11434
+      OLLAMA_MODEL: "llava:7b"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - ecommerce-net
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8085/actuator/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 20s
+
   api-gateway:
     build:
       context: ./services/api-gateway
     image: ecommerce/api-gateway:dev
     container_name: ecommerce-gateway
     ports:
-      - "8080:8080"
+      - "8443:8443"
     environment:
-      SERVER_PORT: "8080"
+      SERVER_PORT: "8443"
       MONOLITH_URI: https://monolith:8443
+      CHAT_SERVICE_URI: http://chat-service:8085
     depends_on:
       monolith:
+        condition: service_healthy
+      chat-service:
         condition: service_healthy
     networks:
       - ecommerce-net

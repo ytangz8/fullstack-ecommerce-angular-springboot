@@ -1,0 +1,26 @@
+server:
+  port: ${SERVER_PORT:8085}
+
+spring:
+  application:
+    name: chat-service
+  webflux:
+    base-path: /
+
+ollama:
+  uri: ${OLLAMA_URI:http://localhost:11434}
+  model: ${OLLAMA_MODEL:llava:7b}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+logging:
+  level:
+    com.blue.chat: INFO
+    reactor.netty.http.client: INFO

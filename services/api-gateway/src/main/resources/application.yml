@@ -1,5 +1,11 @@
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${SERVER_PORT:8443}
+  ssl:
+    enabled: true
+    key-store: classpath:luv2code-keystore.p12
+    key-store-password: secret
+    key-store-type: PKCS12
+    key-alias: luv2code
 
 spring:
   application:
@@ -17,39 +23,41 @@ spring:
         - PreserveHostHeader
       routes:
         - id: chat-stream
-          uri: ${MONOLITH_URI:https://localhost:8443}
+          uri: ${CHAT_SERVICE_URI:http://localhost:8085}
           predicates:
             - Path=/api/chat/**
+          metadata:
+            response-timeout: 1800000
         - id: checkout
-          uri: ${MONOLITH_URI:https://localhost:8443}
+          uri: ${MONOLITH_URI:https://localhost:8444}
           predicates:
             - Path=/api/checkout/**
         - id: catalog-products
-          uri: ${MONOLITH_URI:https://localhost:8443}
+          uri: ${MONOLITH_URI:https://localhost:8444}
           predicates:
             - Path=/api/products/**
         - id: catalog-categories
-          uri: ${MONOLITH_URI:https://localhost:8443}
+          uri: ${MONOLITH_URI:https://localhost:8444}
           predicates:
             - Path=/api/product-category/**
         - id: orders
-          uri: ${MONOLITH_URI:https://localhost:8443}
+          uri: ${MONOLITH_URI:https://localhost:8444}
           predicates:
             - Path=/api/orders/**
         - id: customers
-          uri: ${MONOLITH_URI:https://localhost:8443}
+          uri: ${MONOLITH_URI:https://localhost:8444}
           predicates:
             - Path=/api/customers/**
         - id: geo-countries
-          uri: ${MONOLITH_URI:https://localhost:8443}
+          uri: ${MONOLITH_URI:https://localhost:8444}
           predicates:
             - Path=/api/countries/**
         - id: geo-states
-          uri: ${MONOLITH_URI:https://localhost:8443}
+          uri: ${MONOLITH_URI:https://localhost:8444}
           predicates:
             - Path=/api/states/**
         - id: monolith-fallback
-          uri: ${MONOLITH_URI:https://localhost:8443}
+          uri: ${MONOLITH_URI:https://localhost:8444}
           predicates:
             - Path=/api/**
       globalcors:
