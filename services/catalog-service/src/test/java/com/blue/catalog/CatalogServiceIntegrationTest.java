@@ -15,10 +15,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Full-context integration tests for catalog-service.
  *
- * H2 in-memory (jdbc:h2:mem:catalogdb) is seeded via data.sql at startup.
- * Seed: 4 categories, 14 products (5 Books, 5 Coffee Mugs, 2 Mouse Pads, 2 Luggage Tags).
+ * Test environment:
+ *   - Embedded H2 in-memory database (independent from production data).
+ *   - Schema created by Hibernate (ddl-auto: create-drop) at context startup.
+ *   - Test data loaded from src/test/resources/catalog-test-data.sql via the
+ *     spring.sql.init.data-locations override (replaces the production data.sql).
+ *
+ * Seed: 4 categories, 14 products (5 Books / 5 Coffee Mugs / 2 Mouse Pads / 2 Luggage Tags).
  */
-@SpringBootTest
+@SpringBootTest(properties = {
+        "spring.sql.init.data-locations=classpath:catalog-test-data.sql"
+})
 @AutoConfigureMockMvc
 class CatalogServiceIntegrationTest {
 
@@ -41,12 +48,14 @@ class CatalogServiceIntegrationTest {
         }
 
         @Test
-        @DisplayName("every category exposes id and categoryName")
+        @DisplayName("every category exposes id and categoryName required by the sidebar nav")
         void everyCategoryHasRequiredFields() throws Exception {
             mockMvc.perform(get("/api/product-category"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$._embedded.productCategory[*].id",           everyItem(notNullValue())))
-                    .andExpect(jsonPath("$._embedded.productCategory[*].categoryName", everyItem(notNullValue())));
+                    .andExpect(jsonPath("$._embedded.productCategory[*].id",
+                            everyItem(notNullValue())))
+                    .andExpect(jsonPath("$._embedded.productCategory[*].categoryName",
+                            everyItem(notNullValue())));
         }
 
         @Test
@@ -59,15 +68,15 @@ class CatalogServiceIntegrationTest {
         }
     }
 
-    // ─── Products collection ─────────────────────────────────────────────────
+    // ─── Products collection with pagination ─────────────────────────────────
 
     @Nested
     @DisplayName("GET /api/products")
     class GetProducts {
 
         @Test
-        @DisplayName("returns 200 with all 14 seeded products (default page size 20)")
-        void returns200WithAllProducts() throws Exception {
+        @DisplayName("returns 200 with a page of products and correct HAL structure")
+        void returns200WithPagedProducts() throws Exception {
             mockMvc.perform(get("/api/products").param("size", "20"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$._embedded.products").isArray())
@@ -75,44 +84,86 @@ class CatalogServiceIntegrationTest {
         }
 
         @Test
-        @DisplayName("every product exposes fields required by the checkout/cart flow")
-        void everyProductHasRequiredFields() throws Exception {
-            mockMvc.perform(get("/api/products").param("size", "20"))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$._embedded.products[*].id",         everyItem(notNullValue())))
-                    .andExpect(jsonPath("$._embedded.products[*].sku",        everyItem(notNullValue())))
-                    .andExpect(jsonPath("$._embedded.products[*].name",       everyItem(notNullValue())))
-                    .andExpect(jsonPath("$._embedded.products[*].unitPrice",  everyItem(notNullValue())))
-                    .andExpect(jsonPath("$._embedded.products[*].imageUrl",   everyItem(notNullValue())));
-        }
-
-        @Test
-        @DisplayName("pagination metadata is present in the response")
-        void paginationMetadataPresent() throws Exception {
-            mockMvc.perform(get("/api/products").param("size", "5").param("page", "0"))
+        @DisplayName("pagination block carries size / totalElements / totalPages / number")
+        void paginationMetadataIsComplete() throws Exception {
+            mockMvc.perform(get("/api/products")
+                            .param("page", "0")
+                            .param("size", "5"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.page.size").value(5))
                     .andExpect(jsonPath("$.page.totalElements").value(14))
                     .andExpect(jsonPath("$.page.totalPages").value(3))
                     .andExpect(jsonPath("$.page.number").value(0));
         }
+
+        @Test
+        @DisplayName("every product in the collection exposes all cart-required fields")
+        void everyProductExposesCartRequiredFields() throws Exception {
+            mockMvc.perform(get("/api/products").param("size", "20"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$._embedded.products[*].id",
+                            everyItem(notNullValue())))
+                    .andExpect(jsonPath("$._embedded.products[*].sku",
+                            everyItem(notNullValue())))
+                    .andExpect(jsonPath("$._embedded.products[*].name",
+                            everyItem(notNullValue())))
+                    .andExpect(jsonPath("$._embedded.products[*].unitPrice",
+                            everyItem(notNullValue())))
+                    .andExpect(jsonPath("$._embedded.products[*].imageUrl",
+                            everyItem(notNullValue())))
+                    .andExpect(jsonPath("$._embedded.products[*].unitsInStock",
+                            everyItem(notNullValue())));
+        }
+
+        @Test
+        @DisplayName("second page returns the correct remaining products")
+        void secondPageReturnsRemainingProducts() throws Exception {
+            mockMvc.perform(get("/api/products")
+                            .param("page", "2")
+                            .param("size", "5"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$._embedded.products", hasSize(4)))
+                    .andExpect(jsonPath("$.page.number").value(2));
+        }
     }
 
-    // ─── Single product ──────────────────────────────────────────────────────
+    // ─── Single product — core field serialization ───────────────────────────
 
     @Nested
     @DisplayName("GET /api/products/{id}")
     class GetProductById {
 
         @Test
-        @DisplayName("returns 200 with correct payload for a known id")
-        void returns200ForExistingProduct() throws Exception {
+        @DisplayName("price, stock, active flag and SKU are serialized correctly")
+        void coreFieldsSerializedCorrectly() throws Exception {
             mockMvc.perform(get("/api/products/1"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").value(1))
                     .andExpect(jsonPath("$.sku").value("BOOK-TECH-1000"))
                     .andExpect(jsonPath("$.name").value("JavaScript - The Fun Parts"))
-                    .andExpect(jsonPath("$.unitPrice").value(19.99));
+                    .andExpect(jsonPath("$.unitPrice").value(19.99))
+                    .andExpect(jsonPath("$.unitsInStock").value(100))
+                    .andExpect(jsonPath("$.active").value(true));
+        }
+
+        @Test
+        @DisplayName("category is exposed as a HAL link so the client can fetch it independently")
+        void categoryExposedAsHalLink() throws Exception {
+            mockMvc.perform(get("/api/products/1"))
+                    .andExpect(status().isOk())
+                    // Spring Data REST externalises @ManyToOne relationships as _links entries
+                    .andExpect(jsonPath("$._links.category.href").exists())
+                    .andExpect(jsonPath("$._links.category.href",
+                            containsString("/api/products/1/category")));
+        }
+
+        @Test
+        @DisplayName("following the category link returns the correct category name and id")
+        void categoryLinkResolvesToCorrectCategory() throws Exception {
+            mockMvc.perform(get("/api/products/1/category"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(1))
+                    .andExpect(jsonPath("$.categoryName").value("Books"));
         }
 
         @Test
@@ -130,13 +181,14 @@ class CatalogServiceIntegrationTest {
     class FindByCategoryId {
 
         @Test
-        @DisplayName("returns 5 Books for category id=1")
-        void returnsBooksByCategory() throws Exception {
+        @DisplayName("returns 5 Books for category id=1 with pagination metadata")
+        void returnsBooksByCategoryWithPagination() throws Exception {
             mockMvc.perform(get("/api/products/search/findByCategoryId")
                             .param("id", "1")
                             .param("size", "20"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$._embedded.products", hasSize(5)))
+                    .andExpect(jsonPath("$.page.totalElements").value(5))
                     .andExpect(jsonPath("$._embedded.products[?(@.sku == 'BOOK-TECH-1000')]").exists());
         }
 
@@ -168,18 +220,20 @@ class CatalogServiceIntegrationTest {
     class FindByNameContaining {
 
         @Test
-        @DisplayName("returns matching products for keyword 'Spring'")
+        @DisplayName("returns matching products for keyword 'Spring' including the Spring book")
         void returnsProductsMatchingSpring() throws Exception {
             mockMvc.perform(get("/api/products/search/findByNameContaining")
                             .param("name", "Spring")
                             .param("size", "20"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$._embedded.products", hasSize(greaterThanOrEqualTo(1))))
-                    .andExpect(jsonPath("$._embedded.products[?(@.sku == 'BOOK-TECH-1001')]").exists());
+                    .andExpect(jsonPath("$._embedded.products",
+                            hasSize(greaterThanOrEqualTo(1))))
+                    .andExpect(jsonPath(
+                            "$._embedded.products[?(@.sku == 'BOOK-TECH-1001')]").exists());
         }
 
         @Test
-        @DisplayName("returns empty products array for a keyword that matches nothing — boundary test")
+        @DisplayName("returns empty products array for non-matching keyword — boundary test")
         void returnsEmptyForNonMatchingKeyword() throws Exception {
             mockMvc.perform(get("/api/products/search/findByNameContaining")
                             .param("name", "ZZZNOMATCH"))
@@ -196,7 +250,7 @@ class CatalogServiceIntegrationTest {
     class WriteMethodsDisabled {
 
         @Test
-        @DisplayName("POST /api/products returns 405 — products are read-only")
+        @DisplayName("POST /api/products returns 405 — catalog is read-only")
         void postToProductsReturns405() throws Exception {
             mockMvc.perform(post("/api/products")
                             .contentType("application/json")
@@ -205,7 +259,7 @@ class CatalogServiceIntegrationTest {
         }
 
         @Test
-        @DisplayName("DELETE /api/products/{id} returns 405 — products are read-only")
+        @DisplayName("DELETE /api/products/{id} returns 405 — catalog is read-only")
         void deleteProductReturns405() throws Exception {
             mockMvc.perform(delete("/api/products/1"))
                     .andExpect(status().isMethodNotAllowed());
