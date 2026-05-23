@@ -33,11 +33,11 @@ spring:
           predicates:
             - Path=/api/checkout/**
         - id: catalog-products
-          uri: ${MONOLITH_URI:https://localhost:8444}
+          uri: ${CATALOG_SERVICE_URI:http://localhost:8087}
           predicates:
             - Path=/api/products/**
         - id: catalog-categories
-          uri: ${MONOLITH_URI:https://localhost:8444}
+          uri: ${CATALOG_SERVICE_URI:http://localhost:8087}
           predicates:
             - Path=/api/product-category/**
         - id: orders
